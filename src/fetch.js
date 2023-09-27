@@ -1,5 +1,4 @@
 async function fetchMedia(count) {
-  console.log("Starting fetch");
   const response = await fetch(
     `https://api.nasa.gov/planetary/apod?api_key=bUrjOxOkPWX1ZHK5sGsZSOShGQuqliqicKl74csl&count=${count}`,
     {

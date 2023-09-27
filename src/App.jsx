@@ -9,6 +9,7 @@ export default function App() {
 function Game() {
   const [images, setImages] = useState([]);
   const [level, setLevel] = useState(1);
+  // const [clicked, setClicked] = useState([]);
 
   let count = 0;
   switch (level) {
@@ -52,24 +53,28 @@ function Game() {
     };
   }, [count]);
 
-  return (
-    <>
-      <Deck images={images} orderList={orderList} level={level} />
-      <div className="remove-later">
-        <select onChange={(e) => setLevel(parseInt(e.target.value))}>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-      </div>
-    </>
-  );
+  if (images.length === count) {
+    return (
+      <>
+        <Deck images={images} orderList={orderList} level={level} />
+        <div className="remove-later">
+          <select
+            value={level}
+            onChange={(e) => setLevel(parseInt(e.target.value))}
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </>
+    );
+  } else return;
 }
 
 function Deck({ images, orderList, level }) {
-  console.log(images);
   return (
     <div className={`deck level-${level}`}>
       {orderList.map((position, index) => (
@@ -81,7 +86,6 @@ function Deck({ images, orderList, level }) {
 
 function Card({ image }) {
   const [hidden, setHidden] = useState(true);
-
   return (
     <div
       className="card"
