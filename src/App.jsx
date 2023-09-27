@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import fetchImages from "./fetch";
 
 export default function App() {
@@ -10,8 +10,10 @@ function Game() {
   const [images, setImages] = useState([]);
   const [level, setLevel] = useState(1);
   const [clicked, setClicked] = useState(new Set());
-  // console.log(images);
-  let count = 0;
+  const [score, setScore] = useState(0);
+  const [resetLevel, setResetLevel] = useState(0);
+
+  let count;
   switch (level) {
     case 1:
       count = 4;
@@ -32,13 +34,6 @@ function Game() {
       count = 0;
   }
 
-  let randomOrder = new Set();
-  while (randomOrder.size < count) {
-    let random = Math.floor(Math.random() * count);
-    if (!randomOrder.has(random)) randomOrder.add(random);
-  }
-  let orderList = [...randomOrder];
-
   useEffect(() => {
     let ignore = false;
     async function startFetch() {
@@ -51,16 +46,21 @@ function Game() {
     return () => {
       ignore = true;
     };
-  }, [count]);
+  }, [count, resetLevel]);
 
   if (images.length === count) {
     return (
       <>
+        <Score score={score} />
         <Deck
           images={images}
-          orderList={orderList}
           clicked={clicked}
           setClicked={setClicked}
+          score={score}
+          setScore={setScore}
+          resetLevel={resetLevel}
+          setResetLevel={setResetLevel}
+          count={count}
           level={level}
         />
         <div className="remove-later">
@@ -80,14 +80,34 @@ function Game() {
   } else return;
 }
 
-function Deck({ images, orderList, level, clicked, setClicked }) {
+function Deck({
+  images,
+  clicked,
+  setClicked,
+  score,
+  setScore,
+  resetLevel,
+  setResetLevel,
+  count,
+  level,
+}) {
+  let randomOrder = new Set();
+  while (randomOrder.size < count) {
+    let random = Math.floor(Math.random() * count);
+    if (!randomOrder.has(random)) randomOrder.add(random);
+  }
+  let orderList = [...randomOrder];
+
   function clickHandler(position) {
     if (!clicked.has(position)) {
       const newSet = new Set([...clicked, position]);
       console.log(newSet);
       setClicked(newSet);
+      setScore(score + 1);
     } else {
-      console.log("Already clicked, you lose!)");
+      setClicked(new Set());
+      setScore(0);
+      setResetLevel(resetLevel + 1);
     }
   }
 
@@ -114,6 +134,18 @@ function Card({ image }) {
       <div className={hidden ? "caption hidden" : "caption"}>
         {image["title"]}
       </div>
+    </div>
+  );
+}
+
+function Score({ score }) {
+  const highScore = useRef(0);
+  highScore.current = score > highScore.current ? score : highScore.current;
+
+  return (
+    <div className="score">
+      <h2>Score: {score}</h2>
+      <h2>High Score: {highScore.current}</h2>
     </div>
   );
 }
