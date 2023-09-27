@@ -34,6 +34,12 @@ function Game() {
       count = 0;
   }
 
+  if (clicked.size == count) {
+    console.log(`Congratulations, you cleared level ${level}!`);
+    setClicked(new Set());
+    setLevel(level + 1);
+  }
+
   useEffect(() => {
     let ignore = false;
     async function startFetch() {
@@ -100,9 +106,9 @@ function Deck({
 
   function clickHandler(position) {
     if (!clicked.has(position)) {
-      const newSet = new Set([...clicked, position]);
-      console.log(newSet);
-      setClicked(newSet);
+      const nextSet = new Set([...clicked, position]);
+      console.log(nextSet);
+      setClicked(nextSet);
       setScore(score + 1);
     } else {
       setClicked(new Set());
