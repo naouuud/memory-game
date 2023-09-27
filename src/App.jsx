@@ -9,8 +9,8 @@ export default function App() {
 function Game() {
   const [images, setImages] = useState([]);
   const [level, setLevel] = useState(1);
-  // const [clicked, setClicked] = useState([]);
-
+  const [clicked, setClicked] = useState(new Set());
+  // console.log(images);
   let count = 0;
   switch (level) {
     case 1:
@@ -56,7 +56,13 @@ function Game() {
   if (images.length === count) {
     return (
       <>
-        <Deck images={images} orderList={orderList} level={level} />
+        <Deck
+          images={images}
+          orderList={orderList}
+          clicked={clicked}
+          setClicked={setClicked}
+          level={level}
+        />
         <div className="remove-later">
           <select
             value={level}
@@ -74,11 +80,23 @@ function Game() {
   } else return;
 }
 
-function Deck({ images, orderList, level }) {
+function Deck({ images, orderList, level, clicked, setClicked }) {
+  function clickHandler(position) {
+    if (!clicked.has(position)) {
+      const newSet = new Set([...clicked, position]);
+      console.log(newSet);
+      setClicked(newSet);
+    } else {
+      console.log("Already clicked, you lose!)");
+    }
+  }
+
   return (
     <div className={`deck level-${level}`}>
       {orderList.map((position, index) => (
-        <Card key={index} image={images[position]} />
+        <div key={index} onClick={() => clickHandler(position)}>
+          <Card image={images[position]} />
+        </div>
       ))}
     </div>
   );
