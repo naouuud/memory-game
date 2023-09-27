@@ -31,6 +31,13 @@ function Game() {
       count = 0;
   }
 
+  let randomOrder = new Set();
+  while (randomOrder.size < count) {
+    let random = Math.floor(Math.random() * count);
+    if (!randomOrder.has(random)) randomOrder.add(random);
+  }
+  let orderList = [...randomOrder];
+
   useEffect(() => {
     let ignore = false;
     async function startFetch() {
@@ -47,7 +54,7 @@ function Game() {
 
   return (
     <>
-      <Deck images={images} level={level} />
+      <Deck images={images} orderList={orderList} level={level} />
       <div className="remove-later">
         <select onChange={(e) => setLevel(parseInt(e.target.value))}>
           <option value="1">1</option>
@@ -61,11 +68,12 @@ function Game() {
   );
 }
 
-function Deck({ images, level }) {
+function Deck({ images, orderList, level }) {
+  console.log(images);
   return (
     <div className={`deck level-${level}`}>
-      {images.map((image, index) => (
-        <Card key={index} image={image} />
+      {orderList.map((position, index) => (
+        <Card key={index} image={images[position]} />
       ))}
     </div>
   );
