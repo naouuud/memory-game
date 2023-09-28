@@ -9,7 +9,6 @@ async function fetchMedia(count) {
 }
 
 export default async function fetchImages(count) {
-  console.log("New fetch");
   const list = await fetchMedia(count);
   const filteredList = list.filter((item) => item["media_type"] === "image");
   const urlList = filteredList.map((item) => item["url"]);

@@ -3,16 +3,27 @@ import { useEffect, useState, useRef } from "react";
 import fetchImages from "./fetch";
 
 export default function App() {
-  return <Game />;
+  const [score, setScore] = useState(0);
+  const [resetDeck, setResetDeck] = useState(0);
+
+  return (
+    <>
+      <Score score={score} />
+      <Deck
+        score={score}
+        setScore={setScore}
+        resetDeck={resetDeck}
+        setResetDeck={setResetDeck}
+      />
+    </>
+  );
 }
 
-function Game() {
-  const [images, setImages] = useState([]);
+function Deck({ score, setScore, resetDeck, setResetDeck }) {
   const [level, setLevel] = useState(1);
+  const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
-  const [score, setScore] = useState(0);
-  const [resetLevel, setResetLevel] = useState(0);
-
+  console.log(images);
   let count;
   switch (level) {
     case 1:
@@ -34,69 +45,6 @@ function Game() {
       count = 0;
   }
 
-  if (clicked.size == count) {
-    console.log(`Congratulations, you cleared level ${level}!`);
-    setClicked(new Set());
-    setLevel(level + 1);
-  }
-
-  useEffect(() => {
-    let ignore = false;
-    async function startFetch() {
-      const images = await fetchImages(count);
-      !ignore && setImages(images);
-    }
-
-    startFetch();
-
-    return () => {
-      ignore = true;
-    };
-  }, [count, resetLevel]);
-
-  if (images.length === count) {
-    return (
-      <>
-        <Score score={score} />
-        <Deck
-          images={images}
-          clicked={clicked}
-          setClicked={setClicked}
-          score={score}
-          setScore={setScore}
-          resetLevel={resetLevel}
-          setResetLevel={setResetLevel}
-          count={count}
-          level={level}
-        />
-        <div className="remove-later">
-          <select
-            value={level}
-            onChange={(e) => setLevel(parseInt(e.target.value))}
-          >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-      </>
-    );
-  } else return;
-}
-
-function Deck({
-  images,
-  clicked,
-  setClicked,
-  score,
-  setScore,
-  resetLevel,
-  setResetLevel,
-  count,
-  level,
-}) {
   let randomOrder = new Set();
   while (randomOrder.size < count) {
     let random = Math.floor(Math.random() * count);
@@ -104,28 +52,51 @@ function Deck({
   }
   let orderList = [...randomOrder];
 
+  // useEffect(() => {
+  if (clicked.size == count) {
+    console.log(`Congratulations, you cleared level ${level}!`);
+    setClicked(new Set());
+    setLevel(level + 1);
+  }
+  // }, [clicked.size, count, level]);
+
+  useEffect(() => {
+    console.log("fetching");
+    async function startFetch() {
+      const images = await fetchImages(count);
+      setImages(images);
+    }
+    startFetch();
+
+    return () => {
+      setImages([]);
+    };
+  }, [count, resetDeck]);
+
   function clickHandler(position) {
     if (!clicked.has(position)) {
       const nextSet = new Set([...clicked, position]);
-      console.log(nextSet);
+      // console.log(nextSet);
       setClicked(nextSet);
       setScore(score + 1);
     } else {
       setClicked(new Set());
       setScore(0);
-      setResetLevel(resetLevel + 1);
+      setResetDeck(resetDeck + 1);
     }
   }
 
-  return (
-    <div className={`deck level-${level}`}>
-      {orderList.map((position, index) => (
-        <div key={index} onClick={() => clickHandler(position)}>
-          <Card image={images[position]} />
-        </div>
-      ))}
-    </div>
-  );
+  if (images.length > 0) {
+    return (
+      <div className={`deck level-${level}`}>
+        {orderList.map((position, index) => (
+          <div key={index} onClick={() => clickHandler(position)}>
+            <Card image={images[position]} />
+          </div>
+        ))}
+      </div>
+    );
+  } else return <div>Loading images...</div>;
 }
 
 function Card({ image }) {
