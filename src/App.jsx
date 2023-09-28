@@ -1,16 +1,23 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import fetchImages from "./fetch";
 
 export default function App() {
-  return <Game />;
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+
+  return (
+    <>
+      <Score score={score} highScore={highScore} setHighScore={setHighScore} />
+      <Game score={score} setScore={setScore} />
+    </>
+  );
 }
 
-function Game() {
+function Game({ score, setScore }) {
   const [images, setImages] = useState([]);
   const [level, setLevel] = useState(1);
   const [clicked, setClicked] = useState(new Set());
-  const [score, setScore] = useState(0);
   const [resetLevel, setResetLevel] = useState(0);
 
   let count;
@@ -34,68 +41,53 @@ function Game() {
       count = 0;
   }
 
-  if (clicked.size == count) {
-    console.log(`Congratulations, you cleared level ${level}!`);
-    setClicked(new Set());
-    setLevel(level + 1);
-  }
-
   useEffect(() => {
-    let ignore = false;
     async function startFetch() {
       const images = await fetchImages(count);
-      !ignore && setImages(images);
+      setImages(images);
     }
-
     startFetch();
 
     return () => {
-      ignore = true;
+      setImages([]);
     };
   }, [count, resetLevel]);
 
+  useEffect(() => {
+    if (clicked.size == count) {
+      console.log(`Congratulations, you cleared level ${level}!`);
+      setClicked(new Set());
+      setLevel(level + 1);
+    }
+  }, [clicked.size, count, level]);
+
   if (images.length === count) {
     return (
-      <>
-        <Score score={score} />
-        <Deck
-          images={images}
-          clicked={clicked}
-          setClicked={setClicked}
-          score={score}
-          setScore={setScore}
-          resetLevel={resetLevel}
-          setResetLevel={setResetLevel}
-          count={count}
-          level={level}
-        />
-        <div className="remove-later">
-          <select
-            value={level}
-            onChange={(e) => setLevel(parseInt(e.target.value))}
-          >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-        </div>
-      </>
+      <Deck
+        images={images}
+        clicked={clicked}
+        setClicked={setClicked}
+        resetLevel={resetLevel}
+        setResetLevel={setResetLevel}
+        count={count}
+        level={level}
+        score={score}
+        setScore={setScore}
+      />
     );
-  } else return;
+  } else return <div>Loading images...</div>;
 }
 
 function Deck({
   images,
   clicked,
   setClicked,
-  score,
-  setScore,
   resetLevel,
   setResetLevel,
   count,
   level,
+  score,
+  setScore,
 }) {
   let randomOrder = new Set();
   while (randomOrder.size < count) {
@@ -107,7 +99,7 @@ function Deck({
   function clickHandler(position) {
     if (!clicked.has(position)) {
       const nextSet = new Set([...clicked, position]);
-      console.log(nextSet);
+      // console.log(nextSet);
       setClicked(nextSet);
       setScore(score + 1);
     } else {
@@ -144,14 +136,15 @@ function Card({ image }) {
   );
 }
 
-function Score({ score }) {
-  const highScore = useRef(0);
-  highScore.current = score > highScore.current ? score : highScore.current;
+function Score({ score, highScore, setHighScore }) {
+  useEffect(() => {
+    score > highScore && setHighScore(score);
+  });
 
   return (
     <div className="score">
       <h2>Score: {score}</h2>
-      <h2>High Score: {highScore.current}</h2>
+      <h2>High Score: {highScore}</h2>
     </div>
   );
 }
