@@ -10,12 +10,12 @@ async function fetchMedia(count) {
 
 export default async function fetchImages(count) {
   const list = await fetchMedia(count);
-  const filteredList = list.filter((item) => item["media_type"] === "image");
+  const filteredList = list.filter((item) => /\.jpg$/.test(item["url"]));
   const urlList = filteredList.map((item) => item["url"]);
   while (filteredList.length < count) {
     const [extraImage] = await fetchMedia(1);
     if (
-      extraImage["media_type"] === "image" &&
+      /\.jpg$/.test(extraImage["url"]) &&
       !urlList.includes(extraImage["url"])
     ) {
       filteredList.push(extraImage);

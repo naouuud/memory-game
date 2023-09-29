@@ -5,26 +5,29 @@ import fetchImages from "./fetch";
 export default function App() {
   const [score, setScore] = useState(0);
   const [resetDeck, setResetDeck] = useState(0);
-  console.log("Render App");
+  const highScore = useRef(0);
+
+  // console.log("Render App");
   return (
     <>
-      <Score score={score} />
+      <Score score={score} highScore={highScore} />
       <Deck
         score={score}
         setScore={setScore}
         resetDeck={resetDeck}
         setResetDeck={setResetDeck}
+        highScore={highScore}
       />
     </>
   );
 }
 
-function Deck({ score, setScore, resetDeck, setResetDeck }) {
-  console.log("Render Deck");
+function Deck({ score, setScore, resetDeck, setResetDeck, highScore }) {
+  // console.log("Render Deck");
   const [level, setLevel] = useState(1);
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
-  console.log(images);
+  // console.log(images);
   let count;
   switch (level) {
     case 1:
@@ -34,13 +37,10 @@ function Deck({ score, setScore, resetDeck, setResetDeck }) {
       count = 8;
       break;
     case 3:
-      count = 10;
+      count = 12;
       break;
     case 4:
-      count = 15;
-      break;
-    case 5:
-      count = 20;
+      count = 16;
       break;
     default:
       count = 0;
@@ -53,16 +53,14 @@ function Deck({ score, setScore, resetDeck, setResetDeck }) {
   }
   let orderList = [...randomOrder];
 
-  // useEffect(() => {
   if (clicked.size == count) {
     console.log(`Congratulations, you cleared level ${level}!`);
     setClicked(new Set());
     setLevel(level + 1);
   }
-  // }, [clicked.size, count, level]);
 
   useEffect(() => {
-    console.log("Fetching Effect");
+    // console.log("Fetching Effect");
     async function startFetch() {
       const images = await fetchImages(count);
       setImages(images);
@@ -70,15 +68,15 @@ function Deck({ score, setScore, resetDeck, setResetDeck }) {
     startFetch();
 
     return () => {
-      console.log("Dismount");
+      // console.log("Resynchronize");
       setImages([]);
     };
   }, [count, resetDeck]);
 
   function clickHandler(position) {
     if (!clicked.has(position)) {
+      // console.log("Clicked++");
       const nextSet = new Set([...clicked, position]);
-      // console.log(nextSet);
       setClicked(nextSet);
       setScore(score + 1);
     } else {
@@ -88,17 +86,19 @@ function Deck({ score, setScore, resetDeck, setResetDeck }) {
     }
   }
 
-  if (images.length > 0) {
-    return (
-      <div className={`deck level-${level}`}>
-        {orderList.map((position, index) => (
-          <div key={index} onClick={() => clickHandler(position)}>
-            <Card image={images[position]} />
-          </div>
-        ))}
-      </div>
-    );
-  } else return <div>Loading images...</div>;
+  if (level <= 4) {
+    if (images.length === count) {
+      return (
+        <div className={`deck level-${level}`}>
+          {orderList.map((position, index) => (
+            <div key={index} onClick={() => clickHandler(position)}>
+              <Card image={images[position]} />
+            </div>
+          ))}
+        </div>
+      );
+    } else return <div>Loading images...</div>;
+  } else return <Victory highScore={highScore} />;
 }
 
 function Card({ image }) {
@@ -118,15 +118,22 @@ function Card({ image }) {
   );
 }
 
-function Score({ score }) {
-  console.log("Render Score");
-  const highScore = useRef(0);
+function Score({ score, highScore }) {
+  // console.log("Render Score");
   highScore.current = score > highScore.current ? score : highScore.current;
-
   return (
     <div className="score">
-      <h2>Score: {score}</h2>
-      <h2>High Score: {highScore.current}</h2>
+      <h3>Score: {score}</h3>
+      <h3>High Score: {highScore.current}</h3>
     </div>
+  );
+}
+
+function Victory({ highScore }) {
+  return (
+    <>
+      <h2>Congratulations, you won!</h2>
+      <h2>Your highest score is {highScore.current}.</h2>
+    </>
   );
 }
