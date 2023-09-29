@@ -6,18 +6,57 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [resetDeck, setResetDeck] = useState(0);
   const highScore = useRef(0);
+  const [loading, setLoading] = useState(true);
 
   // console.log("Render App");
   return (
     <>
       <Score score={score} highScore={highScore} />
-      <Deck
-        score={score}
-        setScore={setScore}
-        resetDeck={resetDeck}
-        setResetDeck={setResetDeck}
-        highScore={highScore}
-      />
+      {loading ? (
+        <Loading setLoading={setLoading} />
+      ) : (
+        <Deck
+          score={score}
+          setScore={setScore}
+          resetDeck={resetDeck}
+          setResetDeck={setResetDeck}
+          highScore={highScore}
+        />
+      )}
+    </>
+  );
+}
+
+function newLevel({ setLoading, level }) {
+  function startGame() {
+    setLoading(false);
+  }
+  return (
+    <>
+      <h2>
+        Congratulations, you have finished level {level}! Ready for the next
+        challenge?
+      </h2>
+      <button onClick={startGame}>Let&apos;s go!</button>
+    </>
+  );
+}
+
+function Loading({ setLoading }) {
+  function startGame() {
+    setLoading(false);
+  }
+
+  return (
+    <>
+      <h1>Welcome to Space Memory!</h1>
+      <h2>
+        In this game you must try to click all the different cards without
+        clicking the same card twice! If you succeed, you will progress to a
+        more challenging level. If you double-click a card, a new set of images
+        will load for you to try again. Good luck!
+      </h2>
+      <button onClick={startGame}>Let&apos;s go!</button>
     </>
   );
 }
@@ -27,6 +66,7 @@ function Deck({ score, setScore, resetDeck, setResetDeck, highScore }) {
   const [level, setLevel] = useState(1);
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
+
   // console.log(images);
   let count;
   switch (level) {
