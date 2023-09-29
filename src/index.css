@@ -13,15 +13,7 @@
   height: auto;
 }
 
-.level-5,
-.level-4,
-.level-3 {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-}
-
-.level-2,
-.level-1 {
+.deck {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
