@@ -8,26 +8,29 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [level, setLevel] = useState(0);
   const [resetDeck, setResetDeck] = useState(0);
+  const [tryAgain, setTryAgain] = useState(false);
 
   return (
     <>
       <Score score={score} highScore={highScore} />
+      {level > 0 && <Level level={level} />}
       {loading ? (
         <LoadingScreen
           level={level}
           setLevel={setLevel}
           setLoading={setLoading}
           highScore={highScore}
+          tryAgain={tryAgain}
+          setTryAgain={setTryAgain}
         />
       ) : (
         <Deck
           level={level}
-          setLevel={setLevel}
           score={score}
           setScore={setScore}
           resetDeck={resetDeck}
           setResetDeck={setResetDeck}
-          highScore={highScore}
+          setTryAgain={setTryAgain}
           setLoading={setLoading}
         />
       )}
@@ -45,18 +48,39 @@ function Score({ score, highScore }) {
   );
 }
 
-function LoadingScreen({ level, setLevel, setLoading, highScore }) {
-  function clickHandler() {
+function Level({ level }) {
+  return <h3>Level: {level}</h3>;
+}
+
+function LoadingScreen({
+  level,
+  setLevel,
+  setLoading,
+  highScore,
+  tryAgain,
+  setTryAgain,
+}) {
+  function resetGame() {
+    setLevel(1);
+    setLoading(false);
+  }
+
+  function playAgain() {
+    setLoading(false);
+    setTryAgain(false);
+  }
+
+  function nextLevel() {
     setLevel(level + 1);
     setLoading(false);
   }
 
-  if (level == 2)
+  if (!tryAgain && level == 4)
     return (
       <>
         <h2>Congratulations, you won!</h2>
         <h2>Your highest score is {highScore.current}.</h2>
-        <button>Play again!</button>
+        <button onClick={resetGame}>Play again!</button>
       </>
     );
   else
@@ -71,17 +95,36 @@ function LoadingScreen({ level, setLevel, setLoading, highScore }) {
               a more challenging level. If you double-click a card, a new set of
               images will load for you to try again. Good luck!
             </h2>
+            <button onClick={nextLevel}>Let&apos;s go!</button>
           </>
         )}
-        {level > 0 && (
-          <h2>Congratulations, you have completed level {level}! Rumble on?</h2>
+        {tryAgain && (
+          <>
+            <h2>Whoops, you have double-clicked a card! Try again?</h2>
+            <button onClick={playAgain}>Let&apos;s go!</button>
+          </>
         )}
-        <button onClick={clickHandler}>Let&apos;s go!</button>
+        {!tryAgain && level > 0 && (
+          <>
+            <h2>
+              Congratulations, you have completed level {level}! Rumble on?
+            </h2>
+            <button onClick={nextLevel}>Let&apos;s go!</button>
+          </>
+        )}
       </>
     );
 }
 
-function Deck({ level, score, setScore, resetDeck, setResetDeck, setLoading }) {
+function Deck({
+  level,
+  score,
+  setScore,
+  resetDeck,
+  setResetDeck,
+  setTryAgain,
+  setLoading,
+}) {
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
 
@@ -138,6 +181,8 @@ function Deck({ level, score, setScore, resetDeck, setResetDeck, setLoading }) {
       setClicked(new Set());
       setScore(0);
       setResetDeck(resetDeck + 1);
+      setLoading(true);
+      setTryAgain(true);
     }
   }
 
