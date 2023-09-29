@@ -17,6 +17,7 @@ export default function App() {
           level={level}
           setLevel={setLevel}
           setLoading={setLoading}
+          highScore={highScore}
         />
       ) : (
         <Deck
@@ -44,42 +45,43 @@ function Score({ score, highScore }) {
   );
 }
 
-function LoadingScreen({ level, setLevel, setLoading }) {
+function LoadingScreen({ level, setLevel, setLoading, highScore }) {
   function clickHandler() {
     setLevel(level + 1);
     setLoading(false);
   }
 
-  return (
-    <>
-      {level == 0 && (
-        <>
-          <h1>Welcome to Space Memory!</h1>
-          <h2>
-            In this game you must try to click all the different cards without
-            clicking the same card twice! If you succeed, you will progress to a
-            more challenging level. If you double-click a card, a new set of
-            images will load for you to try again. Good luck!
-          </h2>
-        </>
-      )}
-      {level > 0 && (
-        <h2>Congratulations, you have completed level {level}! Rumble on?</h2>
-      )}
-      <button onClick={clickHandler}>Let&apos;s go!</button>
-    </>
-  );
+  if (level == 2)
+    return (
+      <>
+        <h2>Congratulations, you won!</h2>
+        <h2>Your highest score is {highScore.current}.</h2>
+        <button>Play again!</button>
+      </>
+    );
+  else
+    return (
+      <>
+        {level == 0 && (
+          <>
+            <h1>Welcome to Space Memory!</h1>
+            <h2>
+              In this game you must try to click all the different cards without
+              clicking the same card twice! If you succeed, you will progress to
+              a more challenging level. If you double-click a card, a new set of
+              images will load for you to try again. Good luck!
+            </h2>
+          </>
+        )}
+        {level > 0 && (
+          <h2>Congratulations, you have completed level {level}! Rumble on?</h2>
+        )}
+        <button onClick={clickHandler}>Let&apos;s go!</button>
+      </>
+    );
 }
 
-function Deck({
-  level,
-  score,
-  setScore,
-  resetDeck,
-  setResetDeck,
-  highScore,
-  setLoading,
-}) {
+function Deck({ level, score, setScore, resetDeck, setResetDeck, setLoading }) {
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
 
@@ -139,19 +141,17 @@ function Deck({
     }
   }
 
-  if (level <= 4) {
-    if (images.length === count) {
-      return (
-        <div className={`deck level-${level}`}>
-          {orderList.map((position, index) => (
-            <div key={index} onClick={() => clickHandler(position)}>
-              <Card image={images[position]} />
-            </div>
-          ))}
-        </div>
-      );
-    } else return <div>Loading images...</div>;
-  } else return <Victory highScore={highScore} />;
+  if (images.length === count) {
+    return (
+      <div className={`deck level-${level}`}>
+        {orderList.map((position, index) => (
+          <div key={index} onClick={() => clickHandler(position)}>
+            <Card image={images[position]} />
+          </div>
+        ))}
+      </div>
+    );
+  } else return <div>Loading images...</div>;
 }
 
 function Card({ image }) {
@@ -167,15 +167,5 @@ function Card({ image }) {
         {image["title"]}
       </div>
     </div>
-  );
-}
-
-function Victory({ highScore }) {
-  return (
-    <>
-      <h2>Congratulations, you won!</h2>
-      <h2>Your highest score is {highScore.current}.</h2>
-      <button>Play again!</button>
-    </>
   );
 }
