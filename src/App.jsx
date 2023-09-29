@@ -4,70 +4,85 @@ import fetchImages from "./fetch";
 
 export default function App() {
   const [score, setScore] = useState(0);
-  const [resetDeck, setResetDeck] = useState(0);
   const highScore = useRef(0);
   const [loading, setLoading] = useState(true);
+  const [level, setLevel] = useState(0);
+  const [resetDeck, setResetDeck] = useState(0);
 
-  // console.log("Render App");
   return (
     <>
       <Score score={score} highScore={highScore} />
       {loading ? (
-        <Loading setLoading={setLoading} />
+        <LoadingScreen
+          level={level}
+          setLevel={setLevel}
+          setLoading={setLoading}
+        />
       ) : (
         <Deck
+          level={level}
+          setLevel={setLevel}
           score={score}
           setScore={setScore}
           resetDeck={resetDeck}
           setResetDeck={setResetDeck}
           highScore={highScore}
+          setLoading={setLoading}
         />
       )}
     </>
   );
 }
 
-function newLevel({ setLoading, level }) {
-  function startGame() {
-    setLoading(false);
-  }
+function Score({ score, highScore }) {
+  highScore.current = score > highScore.current ? score : highScore.current;
   return (
-    <>
-      <h2>
-        Congratulations, you have finished level {level}! Ready for the next
-        challenge?
-      </h2>
-      <button onClick={startGame}>Let&apos;s go!</button>
-    </>
+    <div className="score">
+      <h3>Score: {score}</h3>
+      <h3>High Score: {highScore.current}</h3>
+    </div>
   );
 }
 
-function Loading({ setLoading }) {
-  function startGame() {
+function LoadingScreen({ level, setLevel, setLoading }) {
+  function clickHandler() {
+    setLevel(level + 1);
     setLoading(false);
   }
 
   return (
     <>
-      <h1>Welcome to Space Memory!</h1>
-      <h2>
-        In this game you must try to click all the different cards without
-        clicking the same card twice! If you succeed, you will progress to a
-        more challenging level. If you double-click a card, a new set of images
-        will load for you to try again. Good luck!
-      </h2>
-      <button onClick={startGame}>Let&apos;s go!</button>
+      {level == 0 && (
+        <>
+          <h1>Welcome to Space Memory!</h1>
+          <h2>
+            In this game you must try to click all the different cards without
+            clicking the same card twice! If you succeed, you will progress to a
+            more challenging level. If you double-click a card, a new set of
+            images will load for you to try again. Good luck!
+          </h2>
+        </>
+      )}
+      {level > 0 && (
+        <h2>Congratulations, you have completed level {level}! Rumble on?</h2>
+      )}
+      <button onClick={clickHandler}>Let&apos;s go!</button>
     </>
   );
 }
 
-function Deck({ score, setScore, resetDeck, setResetDeck, highScore }) {
-  // console.log("Render Deck");
-  const [level, setLevel] = useState(1);
+function Deck({
+  level,
+  score,
+  setScore,
+  resetDeck,
+  setResetDeck,
+  highScore,
+  setLoading,
+}) {
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
 
-  // console.log(images);
   let count;
   switch (level) {
     case 1:
@@ -93,14 +108,14 @@ function Deck({ score, setScore, resetDeck, setResetDeck, highScore }) {
   }
   let orderList = [...randomOrder];
 
-  if (clicked.size == count) {
-    console.log(`Congratulations, you cleared level ${level}!`);
-    setClicked(new Set());
-    setLevel(level + 1);
-  }
+  useEffect(() => {
+    if (clicked.size == count) {
+      setClicked(new Set());
+      setLoading(true);
+    }
+  }, [clicked.size, count, setLoading]);
 
   useEffect(() => {
-    // console.log("Fetching Effect");
     async function startFetch() {
       const images = await fetchImages(count);
       setImages(images);
@@ -108,14 +123,12 @@ function Deck({ score, setScore, resetDeck, setResetDeck, highScore }) {
     startFetch();
 
     return () => {
-      // console.log("Resynchronize");
       setImages([]);
     };
   }, [count, resetDeck]);
 
   function clickHandler(position) {
     if (!clicked.has(position)) {
-      // console.log("Clicked++");
       const nextSet = new Set([...clicked, position]);
       setClicked(nextSet);
       setScore(score + 1);
@@ -142,7 +155,6 @@ function Deck({ score, setScore, resetDeck, setResetDeck, highScore }) {
 }
 
 function Card({ image }) {
-  // console.log("Render Card");
   const [hidden, setHidden] = useState(true);
   return (
     <div
@@ -158,22 +170,12 @@ function Card({ image }) {
   );
 }
 
-function Score({ score, highScore }) {
-  // console.log("Render Score");
-  highScore.current = score > highScore.current ? score : highScore.current;
-  return (
-    <div className="score">
-      <h3>Score: {score}</h3>
-      <h3>High Score: {highScore.current}</h3>
-    </div>
-  );
-}
-
 function Victory({ highScore }) {
   return (
     <>
       <h2>Congratulations, you won!</h2>
       <h2>Your highest score is {highScore.current}.</h2>
+      <button>Play again!</button>
     </>
   );
 }
