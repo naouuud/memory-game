@@ -5,7 +5,7 @@ import fetchImages from "./fetch";
 export default function App() {
   const [score, setScore] = useState(0);
   const [resetDeck, setResetDeck] = useState(0);
-
+  console.log("Render App");
   return (
     <>
       <Score score={score} />
@@ -20,6 +20,7 @@ export default function App() {
 }
 
 function Deck({ score, setScore, resetDeck, setResetDeck }) {
+  console.log("Render Deck");
   const [level, setLevel] = useState(1);
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
@@ -61,7 +62,7 @@ function Deck({ score, setScore, resetDeck, setResetDeck }) {
   // }, [clicked.size, count, level]);
 
   useEffect(() => {
-    console.log("fetching");
+    console.log("Fetching Effect");
     async function startFetch() {
       const images = await fetchImages(count);
       setImages(images);
@@ -69,6 +70,7 @@ function Deck({ score, setScore, resetDeck, setResetDeck }) {
     startFetch();
 
     return () => {
+      console.log("Dismount");
       setImages([]);
     };
   }, [count, resetDeck]);
@@ -100,6 +102,7 @@ function Deck({ score, setScore, resetDeck, setResetDeck }) {
 }
 
 function Card({ image }) {
+  // console.log("Render Card");
   const [hidden, setHidden] = useState(true);
   return (
     <div
@@ -116,6 +119,7 @@ function Card({ image }) {
 }
 
 function Score({ score }) {
+  console.log("Render Score");
   const highScore = useRef(0);
   highScore.current = score > highScore.current ? score : highScore.current;
 
