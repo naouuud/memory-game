@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import fetchImages from "./fetch";
 
 export default function App() {
+  console.log("Rendering App");
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
 
@@ -15,11 +16,12 @@ export default function App() {
 }
 
 function Game({ score, setScore }) {
+  console.log("Rendering Game");
   const [images, setImages] = useState([]);
   const [level, setLevel] = useState(1);
   const [clicked, setClicked] = useState(new Set());
   const [resetLevel, setResetLevel] = useState(0);
-
+  console.log(images);
   let count;
   switch (level) {
     case 1:
@@ -43,14 +45,16 @@ function Game({ score, setScore }) {
 
   useEffect(() => {
     async function startFetch() {
+      console.log("Fetching Effect");
       const images = await fetchImages(count);
       setImages(images);
     }
     startFetch();
 
-    return () => {
-      setImages([]);
-    };
+    // return () => {
+    //   console.log("Dismount");
+    //   setImages([]);
+    // };
   }, [count, resetLevel]);
 
   useEffect(() => {
@@ -89,6 +93,7 @@ function Deck({
   score,
   setScore,
 }) {
+  console.log("Rendering Deck");
   let randomOrder = new Set();
   while (randomOrder.size < count) {
     let random = Math.floor(Math.random() * count);
@@ -137,6 +142,7 @@ function Card({ image }) {
 }
 
 function Score({ score, highScore, setHighScore }) {
+  console.log("Rendering Score");
   useEffect(() => {
     score > highScore && setHighScore(score);
   });
