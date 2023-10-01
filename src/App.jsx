@@ -4,6 +4,7 @@ import Score from "./Score";
 import Level from "./Level";
 import LoadingScreen from "./LoadingScreen";
 import Deck from "./Deck";
+import Footer from "./Footer";
 
 export default function App() {
   const [score, setScore] = useState(0);
@@ -46,6 +47,7 @@ export default function App() {
           setShowBack={setShowBack}
         />
       )}
+      <Footer />
     </>
   );
 }

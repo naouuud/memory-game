@@ -18,11 +18,6 @@ export default function LoadingScreen({
     setLoading(false);
   }
 
-  // function playAgain() {
-  //   setTryAgain(false);
-  //   setLoading(false);
-  // }
-
   function startGame() {
     setLevel(level + 1);
     setLoading(false);
@@ -72,16 +67,12 @@ export default function LoadingScreen({
         )}
         {tryAgain && (
           <div className="try-again">
-            <h2>Whoops, you have double-clicked a card! Try again!</h2>
-            {/* <button onClick={playAgain}>Let&apos;s go!</button> */}
+            <h2>Whoops, you have double-clicked a card! Try again.</h2>
           </div>
         )}
         {!tryAgain && level > 0 && (
           <div className="rumble-on">
-            <h2>
-              Congratulations, you have completed level {level}! Get ready!
-            </h2>
-            {/* <button onClick={nextLevel}>Let&apos;s go!</button> */}
+            <h2>Congratulations, you have completed level {level}!</h2>
           </div>
         )}
       </>
