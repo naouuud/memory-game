@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import fetchImages from "./fetch";
 import Card from "./Card";
+import CardBack from "./CardBack";
 
 export default function Deck({
   level,
@@ -11,10 +12,12 @@ export default function Deck({
   setResetDeck,
   setTryAgain,
   setLoading,
+  showBack,
+  setShowBack,
 }) {
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
-  const [showBack, setShowBack] = useState(true);
+  // const [showBack, setShowBack] = useState(true);
   const backUrl = useRef("../src/assets/PIA12833~small.jpg");
 
   let count;
@@ -27,9 +30,6 @@ export default function Deck({
       break;
     case 3:
       count = 12;
-      break;
-    case 4:
-      count = 16;
       break;
     default:
       count = 0;
@@ -65,7 +65,7 @@ export default function Deck({
     showBack &&
       setTimeout(() => {
         setShowBack(false);
-      }, 1800);
+      }, 1200);
   });
 
   function clickHandler(position) {
@@ -88,13 +88,14 @@ export default function Deck({
       <div className={`deck level-${level}`}>
         {orderList.map((position, index) => (
           <div key={index} onClick={() => clickHandler(position)}>
-            <Card
-              image={showBack ? backUrl.current : images[position]}
-              showBack={showBack}
-            />
+            {showBack ? (
+              <CardBack image={backUrl.current} />
+            ) : (
+              <Card image={images[position]} />
+            )}
           </div>
         ))}
       </div>
     );
-  } else return <div>Loading images...</div>;
+  } else return <div className="loading-images">Loading images...</div>;
 }

@@ -7,6 +7,7 @@ export default function LoadingScreen({
   highScore,
   tryAgain,
   setTryAgain,
+  setShowBack,
 }) {
   function resetGame() {
     setLevel(1);
@@ -22,15 +23,16 @@ export default function LoadingScreen({
   function nextLevel() {
     setLevel(level + 1);
     setLoading(false);
+    setShowBack(false);
   }
 
-  if (!tryAgain && level == 4)
+  if (!tryAgain && level == 3)
     return (
-      <>
+      <div className="victory">
         <h2>Congratulations, you won!</h2>
         <h2>Your highest score is {highScore.current}.</h2>
         <button onClick={resetGame}>Play again!</button>
-      </>
+      </div>
     );
   else
     return (
@@ -54,9 +56,9 @@ export default function LoadingScreen({
           </div>
         )}
         {!tryAgain && level > 0 && (
-          <div className="victory">
+          <div className="rumble-on">
             <h2>
-              Congratulations, you have completed level {level}! Rumble on?
+              Congratulations, you have completed level {level}! Venture forth?
             </h2>
             <button onClick={nextLevel}>Let&apos;s go!</button>
           </div>

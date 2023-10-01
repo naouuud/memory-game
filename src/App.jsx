@@ -12,6 +12,7 @@ export default function App() {
   const [level, setLevel] = useState(0);
   const [resetDeck, setResetDeck] = useState(0);
   const [tryAgain, setTryAgain] = useState(false);
+  const [showBack, setShowBack] = useState(false);
 
   return (
     <>
@@ -26,6 +27,7 @@ export default function App() {
           highScore={highScore}
           tryAgain={tryAgain}
           setTryAgain={setTryAgain}
+          setShowBack={setShowBack}
         />
       ) : (
         <Deck
@@ -36,6 +38,8 @@ export default function App() {
           setResetDeck={setResetDeck}
           setTryAgain={setTryAgain}
           setLoading={setLoading}
+          showBack={showBack}
+          setShowBack={setShowBack}
         />
       )}
     </>
