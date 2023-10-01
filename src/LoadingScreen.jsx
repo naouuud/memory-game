@@ -35,6 +35,7 @@ export default function LoadingScreen({
 
   useEffect(() => {
     rumbleOn &&
+      level < 3 &&
       setTimeout(() => {
         setRumbleOn(false);
         setLevel(level + 1);
@@ -46,7 +47,7 @@ export default function LoadingScreen({
   if (!tryAgain && level == 3)
     return (
       <div className="victory">
-        <h2>Congratulations, you won!</h2>
+        <h1>Congratulations, you win!</h1>
         <h2>Your highest score is {highScore.current}.</h2>
         <button onClick={resetGame}>Play again!</button>
       </div>
