@@ -97,5 +97,10 @@ export default function Deck({
         ))}
       </div>
     );
-  } else return <div className="loading-images">Loading images...</div>;
+  } else
+    return (
+      <div className="loading-images">
+        <h3>Loading images...</h3>
+      </div>
+    );
 }
