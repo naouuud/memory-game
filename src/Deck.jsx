@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import fetchImages from "./fetch";
 import Card from "./Card";
 
@@ -14,6 +14,8 @@ export default function Deck({
 }) {
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
+  const [showBack, setShowBack] = useState(true);
+  const backUrl = useRef("../src/assets/PIA12833~small.jpg");
 
   let count;
   switch (level) {
@@ -59,11 +61,19 @@ export default function Deck({
     };
   }, [count, resetDeck]);
 
+  useEffect(() => {
+    showBack &&
+      setTimeout(() => {
+        setShowBack(false);
+      }, 1800);
+  });
+
   function clickHandler(position) {
     if (!clicked.has(position)) {
       const nextSet = new Set([...clicked, position]);
       setClicked(nextSet);
       setScore(score + 1);
+      setShowBack(true);
     } else {
       setClicked(new Set());
       setScore(0);
@@ -78,7 +88,10 @@ export default function Deck({
       <div className={`deck level-${level}`}>
         {orderList.map((position, index) => (
           <div key={index} onClick={() => clickHandler(position)}>
-            <Card image={images[position]} />
+            <Card
+              image={showBack ? backUrl.current : images[position]}
+              showBack={showBack}
+            />
           </div>
         ))}
       </div>

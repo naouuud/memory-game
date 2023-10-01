@@ -1,15 +1,46 @@
+body {
+  background-image: url("../src/assets/PIA03653~large.jpg");
+  background-blend-mode: lighten;
+  font-family: "Pixelify Sans", sans-serif;
+  color: white;
+
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  width: 1000px;
+}
+
 .card {
   position: relative;
 
-  border: 1px solid black;
-  height: 250px;
-  width: 250px;
+  height: 220px;
+  width: 220px;
+  border-radius: 5px;
+  padding: 10px 0px;
+  margin-bottom: 10px;
 
+  background-color: rgba(119, 78, 231, 0.384);
   display: flex;
+  justify-content: center;
+
+  animation-name: flip;
+  animation-duration: 1.8s;
+  animation-timing-function: ease-in;
+}
+
+@keyframes flip {
+  from {
+    transform: rotateY(180deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
 }
 
 .card img {
-  width: 250px;
+  width: 200px;
   height: auto;
 }
 

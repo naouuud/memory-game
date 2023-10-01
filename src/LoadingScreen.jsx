@@ -36,7 +36,7 @@ export default function LoadingScreen({
     return (
       <>
         {level == 0 && (
-          <>
+          <div className="welcome">
             <h1>Welcome to Space Memory!</h1>
             <h2>
               In this game you must try to click all the different cards without
@@ -45,21 +45,21 @@ export default function LoadingScreen({
               images will load for you to try again. Good luck!
             </h2>
             <button onClick={nextLevel}>Let&apos;s go!</button>
-          </>
+          </div>
         )}
         {tryAgain && (
-          <>
+          <div className="try-again">
             <h2>Whoops, you have double-clicked a card! Try again?</h2>
             <button onClick={playAgain}>Let&apos;s go!</button>
-          </>
+          </div>
         )}
         {!tryAgain && level > 0 && (
-          <>
+          <div className="victory">
             <h2>
               Congratulations, you have completed level {level}! Rumble on?
             </h2>
             <button onClick={nextLevel}>Let&apos;s go!</button>
-          </>
+          </div>
         )}
       </>
     );

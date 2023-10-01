@@ -1,5 +1,9 @@
 /* eslint-disable react/prop-types */
 
 export default function Level({ level }) {
-  return <h3>Level: {level}</h3>;
+  return (
+    <div className="level">
+      <h1>Level: {level}</h1>
+    </div>
+  );
 }
