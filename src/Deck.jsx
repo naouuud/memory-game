@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import fetchImages from "./fetch";
 import Card from "./Card";
 import CardBack from "./CardBack";
+import Footer from "./Footer";
 
 export default function Deck({
   level,
@@ -86,22 +87,28 @@ export default function Deck({
 
   if (images.length === count) {
     return (
-      <div className={`deck level-${level}`}>
-        {orderList.map((position, index) => (
-          <div key={index} onClick={() => clickHandler(position)}>
-            {showBack ? (
-              <CardBack image={backUrl.current} />
-            ) : (
-              <Card image={images[position]} />
-            )}
-          </div>
-        ))}
-      </div>
+      <>
+        <div className={`deck level-${level}`}>
+          {orderList.map((position, index) => (
+            <div key={index} onClick={() => clickHandler(position)}>
+              {showBack ? (
+                <CardBack image={backUrl.current} />
+              ) : (
+                <Card image={images[position]} />
+              )}
+            </div>
+          ))}
+        </div>
+        <Footer className={level < 3 ? "absolute" : "static"} />
+      </>
     );
   } else
     return (
-      <div className="loading-images">
-        <h3>Loading images...</h3>
-      </div>
+      <>
+        <div className="loading-images">
+          <h3>Loading images...</h3>
+        </div>
+        <Footer className={"absolute"} />
+      </>
     );
 }

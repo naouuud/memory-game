@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
+import Footer from "./Footer";
 export default function LoadingScreen({
   level,
   setLevel,
@@ -75,6 +76,7 @@ export default function LoadingScreen({
             <h2>Congratulations, you have completed level {level}!</h2>
           </div>
         )}
+        <Footer className={"absolute"} />
       </>
     );
 }

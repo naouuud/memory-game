@@ -1,6 +1,7 @@
-export default function Footer() {
+/* eslint-disable react/prop-types */
+export default function Footer({ className }) {
   return (
-    <footer>
+    <footer className={className}>
       <span>
         Website by{" "}
         <a href="https://github.com/naouuud" target="blank">
