@@ -12,6 +12,7 @@ export default function Deck({
   setResetDeck,
   setTryAgain,
   setLoading,
+  setRumbleOn,
   showBack,
   setShowBack,
 }) {
@@ -45,8 +46,9 @@ export default function Deck({
     if (clicked.size == count) {
       setClicked(new Set());
       setLoading(true);
+      setRumbleOn(true);
     }
-  }, [clicked.size, count, setLoading]);
+  }, [clicked.size, count, setLoading, setRumbleOn]);
 
   useEffect(() => {
     async function startFetch() {

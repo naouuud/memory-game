@@ -12,6 +12,7 @@ export default function App() {
   const [level, setLevel] = useState(0);
   const [resetDeck, setResetDeck] = useState(0);
   const [tryAgain, setTryAgain] = useState(false);
+  const [rumbleOn, setRumbleOn] = useState(false);
   const [showBack, setShowBack] = useState(false);
 
   return (
@@ -27,6 +28,8 @@ export default function App() {
           highScore={highScore}
           tryAgain={tryAgain}
           setTryAgain={setTryAgain}
+          rumbleOn={rumbleOn}
+          setRumbleOn={setRumbleOn}
           setShowBack={setShowBack}
         />
       ) : (
@@ -38,6 +41,7 @@ export default function App() {
           setResetDeck={setResetDeck}
           setTryAgain={setTryAgain}
           setLoading={setLoading}
+          setRumbleOn={setRumbleOn}
           showBack={showBack}
           setShowBack={setShowBack}
         />

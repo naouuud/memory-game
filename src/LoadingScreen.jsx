@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useEffect } from "react";
 export default function LoadingScreen({
   level,
   setLevel,
@@ -7,6 +8,8 @@ export default function LoadingScreen({
   highScore,
   tryAgain,
   setTryAgain,
+  rumbleOn,
+  setRumbleOn,
   setShowBack,
 }) {
   function resetGame() {
@@ -15,16 +18,34 @@ export default function LoadingScreen({
     setLoading(false);
   }
 
-  function playAgain() {
-    setTryAgain(false);
-    setLoading(false);
-  }
+  // function playAgain() {
+  //   setTryAgain(false);
+  //   setLoading(false);
+  // }
 
-  function nextLevel() {
+  function startGame() {
     setLevel(level + 1);
     setLoading(false);
     setShowBack(false);
   }
+
+  useEffect(() => {
+    tryAgain &&
+      setTimeout(() => {
+        setTryAgain(false);
+        setLoading(false);
+      }, 1800);
+  });
+
+  useEffect(() => {
+    rumbleOn &&
+      setTimeout(() => {
+        setRumbleOn(false);
+        setLevel(level + 1);
+        setLoading(false);
+        setShowBack(false);
+      }, 2000);
+  });
 
   if (!tryAgain && level == 3)
     return (
@@ -46,21 +67,21 @@ export default function LoadingScreen({
               a more challenging level. If you double-click a card, a new set of
               images will load for you to try again. Good luck!
             </h2>
-            <button onClick={nextLevel}>Let&apos;s go!</button>
+            <button onClick={startGame}>Let&apos;s go!</button>
           </div>
         )}
         {tryAgain && (
           <div className="try-again">
-            <h2>Whoops, you have double-clicked a card! Try again?</h2>
-            <button onClick={playAgain}>Let&apos;s go!</button>
+            <h2>Whoops, you have double-clicked a card! Try again!</h2>
+            {/* <button onClick={playAgain}>Let&apos;s go!</button> */}
           </div>
         )}
         {!tryAgain && level > 0 && (
           <div className="rumble-on">
             <h2>
-              Congratulations, you have completed level {level}! Venture forth?
+              Congratulations, you have completed level {level}! Get ready!
             </h2>
-            <button onClick={nextLevel}>Let&apos;s go!</button>
+            {/* <button onClick={nextLevel}>Let&apos;s go!</button> */}
           </div>
         )}
       </>
