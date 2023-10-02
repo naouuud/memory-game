@@ -9194,7 +9194,7 @@ function $d({
 }) {
   const [h, m] = H.useState([]),
     [p, g] = H.useState(new Set()),
-    S = H.useRef("../src/assets/PIA11796~small.jpg");
+    S = H.useRef("./assets/PIA11796~small.jpg");
   let w;
   switch (e) {
     case 1:
