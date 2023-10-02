@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Score from "./Score";
 import Level from "./Level";
 import LoadingScreen from "./LoadingScreen";
@@ -14,6 +14,12 @@ export default function App() {
   const [tryAgain, setTryAgain] = useState(false);
   const [rumbleOn, setRumbleOn] = useState(false);
   const [showBack, setShowBack] = useState(false);
+  const backImage = useRef(null);
+
+  useEffect(() => {
+    backImage.current = new Image();
+    backImage.src = "../src/assets/PIA11796~small.jpg";
+  }, []);
 
   return (
     <>
