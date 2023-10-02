@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import fetchImages from "./fetch";
 import Card from "./Card";
 import CardBack from "./CardBack";
@@ -19,7 +19,7 @@ export default function Deck({
 }) {
   const [images, setImages] = useState([]);
   const [clicked, setClicked] = useState(new Set());
-  const backUrl = useRef("../src/assets/PIA11796~small.jpg");
+
   let count;
   switch (level) {
     case 1:
@@ -90,11 +90,7 @@ export default function Deck({
         <div className={`deck level-${level}`}>
           {orderList.map((position, index) => (
             <div key={index} onClick={() => clickHandler(position)}>
-              {showBack ? (
-                <CardBack image={backUrl.current} />
-              ) : (
-                <Card image={images[position]} />
-              )}
+              {showBack ? <CardBack /> : <Card image={images[position]} />}
             </div>
           ))}
         </div>

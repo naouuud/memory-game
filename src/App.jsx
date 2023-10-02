@@ -17,8 +17,12 @@ export default function App() {
   const backImage = useRef(null);
 
   useEffect(() => {
-    backImage.current = new Image();
-    backImage.src = "../src/assets/PIA11796~small.jpg";
+    const img = new Image();
+    img.src =
+      "https://images-assets.nasa.gov/image/PIA11796/PIA11796~small.jpg";
+    img.addEventListener("load", () => {
+      backImage.current = img.src;
+    });
   }, []);
 
   return (
@@ -50,6 +54,7 @@ export default function App() {
           setRumbleOn={setRumbleOn}
           showBack={showBack}
           setShowBack={setShowBack}
+          backImage={backImage}
         />
       )}
     </>
